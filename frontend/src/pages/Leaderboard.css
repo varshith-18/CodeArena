@@ -1,0 +1,275 @@
+
+.leaderboard-page {
+  min-height: 100vh;
+  padding: 48px 24px 72px;
+  background: #050609;
+  color: #f4f7fb;
+}
+
+.leaderboard-header,
+.leaderboard-panel {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+}
+
+.leaderboard-header {
+  margin-bottom: 32px;
+}
+
+.leaderboard-eyebrow {
+  color: #00b7e8;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.leaderboard-header h1 {
+  margin: 12px 0;
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+}
+
+.leaderboard-subtitle {
+  color: #929eb0;
+  line-height: 1.6;
+}
+
+.leaderboard-panel {
+  overflow: hidden;
+  border: 1px solid #202633;
+  border-radius: 16px;
+  background: #0b0e14;
+}
+
+.leaderboard-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px;
+  border-bottom: 1px solid #202633;
+}
+
+.leaderboard-panel-heading h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.leaderboard-panel-heading p {
+  margin: 0;
+  color: #929eb0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.leaderboard-count {
+  flex-shrink: 0;
+  padding: 7px 12px;
+  border: 1px solid #173f4d;
+  border-radius: 999px;
+  color: #00b7e8;
+  font-size: 12px;
+}
+
+.leaderboard-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 18px 24px;
+  border-bottom: 1px solid #1b202b;
+}
+
+.leaderboard-table th {
+  color: #929eb0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.leaderboard-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.leaderboard-table tbody tr:hover {
+  background: #101620;
+}
+
+.leaderboard-rank {
+  color: #929eb0;
+  font-weight: 700;
+}
+
+.leaderboard-rank.top-rank {
+  color: #00b7e8;
+}
+
+.leaderboard-username {
+  font-weight: 700;
+}
+
+.leaderboard-stat {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.leaderboard-state {
+  padding: 36px 24px;
+  color: #929eb0;
+  text-align: center;
+}
+
+.leaderboard-error {
+  color: #ff3d8d;
+}
+
+.leaderboard-error button {
+  margin-top: 12px;
+  padding: 9px 16px;
+  border: 1px solid #ff3d8d;
+  border-radius: 8px;
+  background: transparent;
+  color: #ff3d8d;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .leaderboard-page {
+    padding: 32px 14px 48px;
+  }
+
+  .leaderboard-panel-heading {
+    align-items: flex-start;
+    padding: 18px;
+  }
+
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 15px 16px;
+  }
+}
+
+.my-stats {
+  margin-bottom: 28px;
+  padding: 24px;
+  background: #0b0e14;
+  border: 1px solid #222a36;
+  border-radius: 16px;
+  color: #f4f7fb;
+}
+
+.my-stats-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.my-stats-heading h2 {
+  margin: 6px 0 0;
+  font-size: 22px;
+}
+
+.my-rank {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: right;
+}
+
+.my-rank span,
+.stat-card span {
+  color: #929eb0;
+  font-size: 13px;
+}
+
+.my-rank strong {
+  color: #00b7e8;
+  font-size: 28px;
+}
+
+.stats-greeting {
+  margin-bottom: 16px;
+  color: #c5d0df;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 18px;
+  background: #10151e;
+  border: 1px solid #222a36;
+  border-radius: 12px;
+}
+
+.stat-card strong {
+  font-size: 26px;
+  overflow-wrap: anywhere;
+}
+
+.stats-error {
+  color: #ff6b81;
+}
+
+.stats-note {
+  margin-top: 16px;
+  color: #929eb0;
+}
+
+.my-leaderboard-row {
+  background: rgb(0 183 232 / 8%);
+}
+
+.you-label {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: rgb(0 183 232 / 15%);
+  color: #00b7e8;
+  font-size: 11px;
+}
+
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .my-stats {
+    padding: 16px;
+  }
+
+  .stats-grid {
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 13px;
+  }
+
+  .stat-card strong {
+    font-size: 22px;
+  }
+}

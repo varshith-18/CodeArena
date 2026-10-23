@@ -1,0 +1,118 @@
+/* ===== Main application layout ===== */
+
+:root {
+  --sidebar-width: 258px;
+}
+
+.app-shell {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 0;
+  gap: 0;
+  overflow-x: clip;
+}
+
+.app-shell > .main-area {
+  flex: 1 1 auto;
+  width: calc(100% - var(--sidebar-width));
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin-left: var(--sidebar-width);
+  padding-left: 0;
+  transition:
+    margin-left 0.3s ease,
+    width 0.3s ease;
+}
+
+.main-area > header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.workspace-main-area {
+  min-width: 0;
+}
+
+.route-content {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.route-content > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Coding workspace uses the full viewport width */
+.app-shell-workspace > .workspace-main-area {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  margin-left: 0;
+}
+
+/* ===== Responsive layout ===== */
+
+/* Sidebar width is controlled in index.css */
+.app-shell > .sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  height: 100dvh;
+  z-index: 100;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.app-shell-sidebar-closed:not(.app-shell-workspace) > .main-area {
+  width: 100%;
+  margin-left: 0;
+}
+
+.app-shell-sidebar-closed:not(.app-shell-workspace) > .sidebar {
+  transform: translateX(-100%);
+  box-shadow: none;
+}
+
+.app-shell-sidebar-open:not(.app-shell-workspace) > .sidebar {
+  transform: translateX(0);
+}
+
+.app-shell-sidebar-open:not(.app-shell-workspace) > .main-area {
+  width: calc(100% - var(--sidebar-width));
+  margin-left: var(--sidebar-width);
+}
+
+.app-shell-sidebar-closed:not(.app-shell-workspace) .sidebar-overlay {
+  display: none;
+}
+
+/* Tablet */
+@media (max-width: 1000px) {
+  :root {
+    --sidebar-width: 240px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .app-shell > .main-area {
+    width: 100%;
+    margin-left: 0;
+  }
+
+}
+
+/* The coding workspace does not render the sidebar. */
+.app-shell.app-shell-workspace > .workspace-main-area {
+  width: 100%;
+  margin-left: 0;
+}

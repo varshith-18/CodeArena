@@ -1,0 +1,276 @@
+/* index.css — CodeArena global styles */
+
+/* 1. Design tokens */
+
+:root {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+
+  color: #f4f7fb;
+  background: #050609;
+
+  --color-bg: #050609;
+  --color-surface: #0b0e14;
+  --color-surface-hover: #101620;
+  --color-border: #252d3a;
+
+  --color-text: #f4f7fb;
+  --color-muted: #929eb0;
+
+  --color-primary: #00b7e8;
+  --color-primary-hover: #11c9f5;
+  --color-accent: #ff3d8d;
+
+  --color-success: #36d399;
+  --color-error: #ff718b;
+  --color-warning: #fbbf24;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --transition-fast: 0.18s ease;
+  --transition-normal: 0.25s ease;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 2. Reset */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: var(--color-bg);
+  scroll-behavior: smooth;
+  scrollbar-color: #354156 var(--color-bg);
+  scrollbar-width: thin;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  color: var(--color-text);
+  background: var(--color-bg);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* 3. React root */
+
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  isolation: isolate;
+}
+
+/* 4. Typography */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+  color: var(--color-text);
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+p {
+  margin-top: 0;
+}
+
+small {
+  font-size: 12px;
+}
+
+strong {
+  font-weight: 750;
+}
+
+/* 5. Links */
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+/* 6. Form elements */
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+input,
+textarea,
+select {
+  max-width: 100%;
+}
+
+input,
+textarea,
+select,
+button {
+  accent-color: var(--color-primary);
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* 7. Accessible keyboard focus */
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+/* 8. Media */
+
+img,
+picture,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+/* 9. Code and preformatted content */
+
+code,
+pre,
+kbd,
+samp {
+  font-family:
+    "SFMono-Regular",
+    Consolas,
+    "Liberation Mono",
+    monospace;
+}
+
+pre {
+  max-width: 100%;
+  overflow: auto;
+}
+
+code {
+  overflow-wrap: anywhere;
+}
+
+/* 10. Selection */
+
+::selection {
+  color: #ffffff;
+  background: rgba(0, 183, 232, 0.32);
+}
+
+/* 11. Shared loading helper */
+
+.auth-loading {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 24px;
+  color: var(--color-muted);
+  background: var(--color-bg);
+  text-align: center;
+}
+
+/* 12. Shared error helper */
+
+.error-message {
+  padding: 12px 14px;
+  color: #ff9dbb;
+  background: rgba(255, 61, 141, 0.08);
+  border: 1px solid rgba(255, 61, 141, 0.25);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* 13. Scrollbar styling */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #354156;
+  border: 2px solid var(--color-bg);
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #50617a;
+}
+
+/* 14. Mobile tap behavior */
+
+html,
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 13px;
+  }
+}
+
+/* 15. Reduced motion accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

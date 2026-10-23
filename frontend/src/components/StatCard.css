@@ -1,0 +1,225 @@
+/* ==========================================
+   CODEARENA — STAT CARDS
+   Jet Black · Cerulean Blue · Neon Rose
+========================================== */
+
+.stat-card {
+  position: relative;
+  min-width: 0;
+  padding: 22px;
+
+  background: linear-gradient(145deg, #10141d, #090b10);
+  border: 1px solid #252c38;
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* Subtle decorative glow */
+
+.stat-card::before {
+  content: "";
+  position: absolute;
+  top: -55px;
+  right: -55px;
+
+  width: 130px;
+  height: 130px;
+
+  background: var(--stat-glow, rgba(0, 166, 214, 0.12));
+  border-radius: 50%;
+  filter: blur(45px);
+
+  pointer-events: none;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 166, 214, 0.45);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+}
+
+/* Card heading and icon */
+
+.stat-card-top {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin-bottom: 22px;
+}
+
+.stat-title {
+  padding-top: 5px;
+
+  color: #9ba6b7;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* Icon container */
+
+.stat-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+
+  width: 44px;
+  height: 44px;
+
+  border: 1px solid transparent;
+  border-radius: 12px;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.stat-card:hover .stat-icon {
+  transform: scale(1.06);
+}
+
+/* Cerulean blue */
+
+.stat-icon-blue {
+  color: #00b7eb;
+  background: rgba(0, 166, 214, 0.13);
+  border-color: rgba(0, 166, 214, 0.25);
+  --stat-glow: rgba(0, 166, 214, 0.15);
+}
+
+.stat-card:hover .stat-icon-blue {
+  box-shadow: 0 0 20px rgba(0, 166, 214, 0.13);
+}
+
+/* Neon rose */
+
+.stat-icon-rose {
+  color: #ff3d8d;
+  background: rgba(255, 61, 141, 0.12);
+  border-color: rgba(255, 61, 141, 0.25);
+  --stat-glow: rgba(255, 61, 141, 0.14);
+}
+
+/* Green */
+
+.stat-icon-green {
+  color: #36d399;
+  background: rgba(54, 211, 153, 0.11);
+  border-color: rgba(54, 211, 153, 0.23);
+  --stat-glow: rgba(54, 211, 153, 0.12);
+}
+
+/* Orange */
+.stat-icon-orange {
+  color: #ff9a53;
+  background: rgba(255, 133, 61, 0.11);
+  border-color: rgba(255, 133, 61, 0.23);
+  --stat-glow: rgba(255, 133, 61, 0.12);
+}
+/* Purple */
+
+.stat-icon-purple {
+  color: #b69cff;
+  background: rgba(167, 139, 250, 0.12);
+  border-color: rgba(167, 139, 250, 0.24);
+  --stat-glow: rgba(167, 139, 250, 0.12);
+}
+
+/* Main statistic */
+
+.stat-value {
+  position: relative;
+  z-index: 1;
+
+  margin-bottom: 9px;
+
+  color: #f5f7fb;
+  font-size: clamp(26px, 2.4vw, 34px);
+  font-weight: 800;
+  letter-spacing: -1.2px;
+  line-height: 1.2;
+
+  overflow-wrap: anywhere;
+}
+
+/* Supporting description */
+
+.stat-description {
+  position: relative;
+  z-index: 1;
+
+  margin: 0;
+
+  color: #7f8a9c;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* Responsive sizing */
+
+@media (max-width: 768px) {
+  .stat-card {
+    padding: 18px;
+  }
+
+  .stat-card-top {
+    margin-bottom: 18px;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .stat-value {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 420px) {
+  .stat-card {
+    padding: 15px;
+    border-radius: 11px;
+  }
+
+  .stat-title {
+    font-size: 12px;
+  }
+
+  .stat-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .stat-value {
+    font-size: 25px;
+  }
+
+  .stat-description {
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat-card,
+  .stat-icon {
+    transition: none;
+  }
+
+  .stat-card:hover,
+  .stat-card:hover .stat-icon {
+    transform: none;
+  }
+}

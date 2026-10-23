@@ -1,0 +1,218 @@
+
+/* ==========================================
+   CODEARENA — LOGIN FORM
+========================================== */
+
+.auth-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 390px;
+  margin: 0 auto;
+  padding: 15px;
+
+  color: #f5f7fb;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+
+  box-sizing: border-box;
+}
+
+/* Heading */
+
+.auth-card h1 {
+  margin: 0 0 10px;
+  color: #f5f7fb;
+  font-size: clamp(27px, 3vw, 34px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.2;
+}
+
+/* Subtitle */
+
+.auth-subtitle {
+  margin: 0 0 28px;
+  color: #9ba7b8;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* Labels */
+
+.auth-card label {
+  display: block;
+  margin: 0 0 8px;
+
+  color: #d5dce7;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+/* Input fields */
+
+.auth-card input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 47px;
+  margin: 0 0 20px;
+  padding: 0 14px;
+
+  color: #f5f7fb;
+  background: #0d1119;
+  border: 1px solid #293343;
+  border-radius: 9px;
+  outline: none;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  box-sizing: border-box;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.auth-card input::placeholder {
+  color: #667386;
+}
+
+.auth-card input:hover {
+  border-color: #3a475a;
+}
+
+.auth-card input:focus {
+  background: #0e141e;
+  border-color: #00a6d6;
+  box-shadow: 0 0 0 3px rgba(0, 166, 214, 0.12);
+}
+
+/* Login button */
+
+.auth-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 48px;
+  margin-top: 5px;
+  padding: 12px 18px;
+
+  color: #ffffff;
+  background: linear-gradient(110deg, #008fbd, #00a6d6);
+  border: 1px solid rgba(0, 166, 214, 0.6);
+  border-radius: 9px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 750;
+
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.auth-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 8px 24px rgba(0, 166, 214, 0.2);
+}
+
+.auth-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-submit:focus-visible {
+  outline: 2px solid #ff3d8d;
+  outline-offset: 3px;
+}
+
+.auth-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Error message */
+
+.auth-error {
+  margin: 0 0 20px;
+  padding: 12px 14px;
+
+  color: #ff8db8;
+  background: rgba(255, 61, 141, 0.08);
+  border: 1px solid rgba(255, 61, 141, 0.3);
+  border-radius: 9px;
+
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Footer */
+
+.auth-footer {
+  margin: 24px 0 0;
+  color: #8995a7;
+  font-size: 12px;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.auth-footer a {
+  color: #00b7e8;
+  font-weight: 750;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.auth-footer a:hover {
+  color: #ff3d8d;
+}
+
+/* Hide standalone brand because AuthLayout has its own */
+
+.auth-form-inner .auth-brand {
+  display: none;
+}
+
+/* Mobile adjustments */
+
+@media (max-width: 760px) {
+  .auth-card {
+    padding: 8px 4px;
+  }
+
+  .auth-card h1 {
+    font-size: 28px;
+  }
+
+  .auth-subtitle {
+    margin-bottom: 24px;
+  }
+
+  .auth-card input {
+    height: 46px;
+    margin-bottom: 18px;
+  }
+
+  .auth-submit {
+    min-height: 46px;
+  }
+}
+
+/* Reduced motion accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-card input,
+  .auth-submit,
+  .auth-footer a {
+    transition: none;
+  }
+}
