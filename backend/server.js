@@ -8,12 +8,13 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/auth");
 const leaderboardRoutes = require("./routes/leaderboard");
 const submissionRoutes = require("./routes/submissions");
+const activityRoutes = require("./routes/activity");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json({ limit: "64kb" }));
-app.use("/api/leaderboard", leaderboardRoutes);
+
 
 app.get("/api/health", (req, res) => {
   res.json({
@@ -24,6 +25,8 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/submissions", submissionRoutes);
+app.use("/api/activity", activityRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
 
 async function startServer() {
   await connectDB();

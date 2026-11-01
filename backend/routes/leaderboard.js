@@ -1,4 +1,3 @@
-
 const express = require("express");
 const mongoose = require("mongoose");
 
@@ -44,9 +43,7 @@ async function getRankedLeaderboard(limit = 100000) {
         from: User.collection.name,
         localField: "userId",
         foreignField: "_id",
-        pipeline: [
-          { $project: { name: 1 } },
-        ],
+        pipeline: [{ $project: { name: 1 } }],
         as: "profile",
       },
     },
@@ -117,9 +114,7 @@ router.get("/me", protect, async (req, res) => {
       });
     }
 
-    const objectUserId = new mongoose.Types.ObjectId(
-      String(userId)
-    );
+    const objectUserId = new mongoose.Types.ObjectId(String(userId));
 
     // Count all attempts and accepted attempts for this user.
     const [stats] = await Submission.aggregate([
@@ -130,11 +125,7 @@ router.get("/me", protect, async (req, res) => {
           totalSubmissions: { $sum: 1 },
           acceptedSubmissions: {
             $sum: {
-              $cond: [
-                { $eq: ["$verdict", "Accepted"] },
-                1,
-                0,
-              ],
+              $cond: [{ $eq: ["$verdict", "Accepted"] }, 1, 0],
             },
           },
           solvedProblems: {
@@ -159,6 +150,15 @@ router.get("/me", protect, async (req, res) => {
           _id: 0,
           totalSubmissions: 1,
           acceptedSubmissions: 1,
+
+          solvedProblemSlugs: {
+            $filter: {
+              input: "$solvedProblems",
+              as: "problem",
+              cond: { $ne: ["$$problem", null] },
+            },
+          },
+
           problemsSolved: {
             $size: {
               $filter: {
@@ -176,22 +176,20 @@ router.get("/me", protect, async (req, res) => {
     const acceptedSubmissions = stats?.acceptedSubmissions || 0;
     const problemsSolved = stats?.problemsSolved || 0;
 
+    const solvedProblemSlugs = stats?.solvedProblemSlugs || [];
+
     const acceptanceRate = totalSubmissions
-      ? Number(
-          ((acceptedSubmissions / totalSubmissions) * 100).toFixed(1)
-        )
+      ? Number(((acceptedSubmissions / totalSubmissions) * 100).toFixed(1))
       : 0;
 
     // Rank against the entire leaderboard, not just the displayed page.
     const rankedUsers = await getRankedLeaderboard();
 
     const rankIndex = rankedUsers.findIndex(
-      (entry) => entry.userId === String(objectUserId)
+      (entry) => entry.userId === String(objectUserId),
     );
 
-    const me = await User.findById(objectUserId)
-      .select("name")
-      .lean();
+    const me = await User.findById(objectUserId).select("name").lean();
 
     return res.status(200).json({
       success: true,
@@ -199,6 +197,7 @@ router.get("/me", protect, async (req, res) => {
         rank: rankIndex === -1 ? null : rankIndex + 1,
         username: me?.name || "Coder",
         problemsSolved,
+        solvedProblemSlugs,
         acceptedSubmissions,
         totalSubmissions,
         acceptanceRate,

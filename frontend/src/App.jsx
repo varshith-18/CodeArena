@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  BrowserRouter,
   Navigate,
   Route,
   Routes,
@@ -170,8 +169,6 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
       <AppRoutes />
-    </BrowserRouter>
   );
 }
