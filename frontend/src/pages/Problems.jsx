@@ -1,5 +1,6 @@
 import "./Problems.css";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { getDashboardStats } from "../api/dashboardApi";
 import { Link } from "react-router-dom";
 import {
   Search,
@@ -12,36 +13,53 @@ import {
 } from "lucide-react";
 import { problems } from "../data/problems";
 
-
-
 export default function Problems() {
   const [search, setSearch] = useState("");
   const [difficulty, setDifficulty] = useState("All");
   const [topic, setTopic] = useState("All");
   const [showFilters, setShowFilters] = useState(false);
+  const [solvedProblemSlugs, setSolvedProblemSlugs] = useState([]);
 
+  useEffect(() => {
+    async function fetchSolvedProblems() {
+      try {
+        const token = sessionStorage.getItem("codearena_token");
+
+        if (!token) return;
+
+        const stats = await getDashboardStats(token);
+
+        setSolvedProblemSlugs(stats.solvedProblemSlugs || []);
+      } catch (error) {
+        console.error("Failed to fetch solved problems:", error);
+      }
+    }
+
+    fetchSolvedProblems();
+  }, []);
+  const updatedProblems = problems.map((problem) => ({
+    ...problem,
+    solved: solvedProblemSlugs.includes(problem.slug),
+  }));
   const topics = [
     "All",
     ...new Set(problems.flatMap((problem) => problem.topics)),
   ];
 
-  const filteredProblems = useMemo(() => {
-    return problems.filter((problem) => {
-      const matchesSearch =
-        problem.title.toLowerCase().includes(search.toLowerCase()) ||
-        problem.topics.some((item) =>
-          item.toLowerCase().includes(search.toLowerCase())
-        );
+  const filteredProblems = updatedProblems.filter((problem) => {
+    const matchesSearch =
+      problem.title.toLowerCase().includes(search.toLowerCase()) ||
+      problem.topics.some((item) =>
+        item.toLowerCase().includes(search.toLowerCase()),
+      );
 
-      const matchesDifficulty =
-        difficulty === "All" || problem.difficulty === difficulty;
+    const matchesDifficulty =
+      difficulty === "All" || problem.difficulty === difficulty;
 
-      const matchesTopic =
-        topic === "All" || problem.topics.includes(topic);
+    const matchesTopic = topic === "All" || problem.topics.includes(topic);
 
-      return matchesSearch && matchesDifficulty && matchesTopic;
-    });
-  }, [search, difficulty, topic]);
+    return matchesSearch && matchesDifficulty && matchesTopic;
+  });
 
   function resetFilters() {
     setSearch("");
@@ -82,7 +100,10 @@ export default function Problems() {
           <span className="difficulty-dot dot-medium" />
           <span>Medium</span>
           <strong>
-            {problems.filter((problem) => problem.difficulty === "Medium").length}
+            {
+              problems.filter((problem) => problem.difficulty === "Medium")
+                .length
+            }
           </strong>
         </div>
 

@@ -1,12 +1,28 @@
+import {
+  Bell,
+  Search,
+  Menu,
+  Flame,
+  LogOut,
+  Terminal,
+  X,
+  ArrowUpRight,
+} from "lucide-react";
 
-import { Bell, Search, Menu, Flame, LogOut, Terminal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useEffect, useRef, useState } from "react";
+import { problems } from "../data/problems";
 import "./Topbar.css";
 
 export default function Topbar({ onMenuClick, sidebarOpen }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const searchRef = useRef(null);
 
   function handleLogout() {
     logout();
@@ -14,6 +30,45 @@ export default function Topbar({ onMenuClick, sidebarOpen }) {
   }
 
   const initial = user?.name?.charAt(0)?.toUpperCase() || "U";
+
+  const searchResults = problems.filter((problem) => {
+    const query = searchQuery.trim().toLowerCase();
+
+    if (!query) return false;
+
+    return (
+      problem.title.toLowerCase().includes(query) ||
+      problem.topics.some((topic) =>
+        topic.toLowerCase().includes(query)
+      ) ||
+      problem.difficulty.toLowerCase().includes(query)
+    );
+  }).slice(0, 6);
+
+  function openProblem(slug) {
+    navigate(`/problems/${slug}`);
+    setSearchOpen(false);
+    setSearchQuery("");
+  }
+
+  useEffect(() => {
+    if (searchOpen) {
+      searchRef.current?.focus();
+    }
+  }, [searchOpen]);
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.key === "Escape") {
+        setSearchOpen(false);
+        setSearchQuery("");
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <header className="topbar">
@@ -34,6 +89,7 @@ export default function Topbar({ onMenuClick, sidebarOpen }) {
         <span className="topbar-brand-icon">
           <Terminal size={17} />
         </span>
+
         <span className="topbar-brand-copy">
           <strong>CodeArena</strong>
           <small>LEVEL UP YOUR CODE</small>
@@ -47,14 +103,78 @@ export default function Topbar({ onMenuClick, sidebarOpen }) {
       </div>
 
       <div className="topbar-actions">
-        <button
-          className="search-button"
-          onClick={() => navigate("/problems")}
-        >
-          <Search size={17} />
-          <span>Find problems...</span>
-          <kbd>⌕</kbd>
-        </button>
+        <div className="global-search">
+          {!searchOpen ? (
+            <button
+              className="search-button"
+              onClick={() => setSearchOpen(true)}
+            >
+              <Search size={17} />
+              <span>Find problems...</span>
+              <kbd>⌕</kbd>
+            </button>
+          ) : (
+            <div className="global-search-input">
+              <Search size={17} />
+
+              <input
+                ref={searchRef}
+                type="text"
+                placeholder="Search problems or topics..."
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                aria-label="Search coding problems"
+              />
+
+              <button
+                className="search-close"
+                onClick={() => {
+                  setSearchOpen(false);
+                  setSearchQuery("");
+                }}
+                aria-label="Close search"
+              >
+                <X size={17} />
+              </button>
+            </div>
+          )}
+
+          {searchOpen && searchQuery.trim() && (
+            <div className="search-results">
+              {searchResults.length > 0 ? (
+                searchResults.map((problem) => (
+                  <button
+                    key={problem.slug}
+                    className="search-result-item"
+                    onClick={() => openProblem(problem.slug)}
+                  >
+                    <div className="search-result-info">
+                      <strong>{problem.title}</strong>
+
+                      <span>
+                        {problem.topics.slice(0, 2).join(" · ")}
+                      </span>
+                    </div>
+
+                    <span
+                      className={`difficulty difficulty-${problem.difficulty.toLowerCase()}`}
+                    >
+                      {problem.difficulty}
+                    </span>
+
+                    <ArrowUpRight size={16} />
+                  </button>
+                ))
+              ) : (
+                <div className="search-no-results">
+                  <Search size={20} />
+                  <strong>No problems found</strong>
+                  <span>Try another problem name or topic.</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         <div className="streak-badge">
           <Flame size={17} />

@@ -105,10 +105,10 @@ export default function SubmissionHistory() {
 
                   <td className="submission-details-cell">
                     <Link
-                      to={`/submissions/${submission._id}`}
+                      to={`/problems/${submission.problemSlug}?submissionId=${submission._id}`}
                       className="view-submission-link"
                     >
-                      View Details →
+                      View in Editor →
                     </Link>
                   </td>
                 </tr>

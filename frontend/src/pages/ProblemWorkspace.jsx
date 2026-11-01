@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./ProblemWorkspace.css";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import {
   ArrowLeft,
@@ -25,10 +25,10 @@ const API_BASE_URL = configuredApiUrl.replace(/\/+$/, "").replace(/\/api$/, "");
 
 function getAuthToken() {
   return (
+    sessionStorage.getItem("codearena_token") ||
     localStorage.getItem("token") ||
     localStorage.getItem("authToken") ||
-    localStorage.getItem("accessToken") ||
-    sessionStorage.getItem("codearena_token")
+    localStorage.getItem("accessToken")
   );
 }
 
@@ -226,6 +226,7 @@ function createProblemDetails(problem) {
 
 export default function ProblemWorkspace() {
   const { slug } = useParams();
+    const [searchParams] = useSearchParams();
   const problem = problems.find((item) => item.slug === slug);
   const details = problem
     ? problemDetails[slug] || createProblemDetails(problem)
@@ -233,7 +234,7 @@ export default function ProblemWorkspace() {
   const [submissions, setSubmissions] = useState([]);
   const [isLoadingSubmissions, setIsLoadingSubmissions] = useState(false);
   const [submissionError, setSubmissionError] = useState("");
-
+  const submissionId = searchParams.get("submissionId");
   const [code, setCode] = useState(
     details?.starterCode || "// Write your JavaScript solution here\n",
   );
@@ -246,7 +247,9 @@ export default function ProblemWorkspace() {
 
   // Reset the workspace when the route changes to another problem.
   useEffect(() => {
-    setCode(details?.starterCode || "// Write your JavaScript solution here\\n");
+    setCode(
+      details?.starterCode || "// Write your JavaScript solution here\\n",
+    );
     setResult(null);
     setBottomTab("testcases");
     setSelectedTest(0);
@@ -254,6 +257,48 @@ export default function ProblemWorkspace() {
     setSubmissions([]);
     setSubmissionError("");
   }, [slug, details]);
+  // Load a previously submitted solution into Monaco Editor
+  useEffect(() => {
+    if (!submissionId) return;
+
+    async function loadSubmittedCode() {
+      try {
+        const token = getAuthToken();
+
+        if (!token) {
+          throw new Error("Please log in to view submitted code.");
+        }
+
+        const response = await fetch(
+          `${API_BASE_URL}/api/submissions/${submissionId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        const data = await readApiResponse(response);
+
+        if (!data.submission?.sourceCode) {
+          throw new Error("Submitted source code was not found.");
+        }
+
+        // Load the original submitted code into Monaco
+        setCode(data.submission.sourceCode);
+
+        // Show the problem description and editor
+        setActiveTab("description");
+        setBottomTab("testcases");
+        setResult(null);
+      } catch (error) {
+        console.error("Failed to load submitted code:", error);
+        setSubmissionError(error.message || "Unable to load submitted code.");
+      }
+    }
+
+    loadSubmittedCode();
+  }, [submissionId, slug]);
 
   if (!problem || !details) {
     return (
@@ -293,20 +338,17 @@ export default function ProblemWorkspace() {
     setResult(null);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/submissions/run`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            problemSlug: slug,
-            sourceCode: code,
-          }),
+      const response = await fetch(`${API_BASE_URL}/api/submissions/run`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          problemSlug: slug,
+          sourceCode: code,
+        }),
+      });
 
       const data = await readApiResponse(response);
 
@@ -316,7 +358,7 @@ export default function ProblemWorkspace() {
 
       setResult({
         status: data.verdict || "Unknown",
-        message: `${data.passed ?? 0}/${data.total ?? (data.results?.length ?? 0)} test cases passed.`,
+        message: `${data.passed ?? 0}/${data.total ?? data.results?.length ?? 0} test cases passed.`,
         submissionResults: data.results || [],
         time: data.time,
         memory: data.memory,
@@ -357,20 +399,17 @@ export default function ProblemWorkspace() {
     setResult(null);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/submissions/submit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            problemSlug: slug,
-            sourceCode: code,
-          }),
+      const response = await fetch(`${API_BASE_URL}/api/submissions/submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          problemSlug: slug,
+          sourceCode: code,
+        }),
+      });
 
       const data = await readApiResponse(response);
 
@@ -380,7 +419,7 @@ export default function ProblemWorkspace() {
 
       setResult({
         status: data.verdict || "Unknown",
-        message: `${data.passed ?? 0}/${data.total ?? (data.results?.length ?? 0)} test cases passed.`,
+        message: `${data.passed ?? 0}/${data.total ?? data.results?.length ?? 0} test cases passed.`,
         stdout: "",
         stderr: "",
         compileOutput: "",
@@ -587,10 +626,10 @@ export default function ProblemWorkspace() {
                         </span>
                         <span>{submission.time}s</span>
                         <Link
-                          to={`/submissions/${submission._id}`}
+                          to={`/problems/${slug}?submissionId=${submission._id}`}
                           className="submission-view-code"
                         >
-                          View submitted code
+                          View in Editor →
                         </Link>
                       </div>
                     </div>
