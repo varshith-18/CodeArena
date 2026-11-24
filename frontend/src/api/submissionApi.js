@@ -15,8 +15,11 @@ export async function runCode({ problemSlug, sourceCode }, options) {
   return data;
 }
 
-export async function submitCode({ problemSlug, sourceCode }, options) {
-  const data = await submitSubmissionCode({ problemSlug, sourceCode }, options);
+export async function submitCode({ problemSlug, sourceCode, learningContext }, options) {
+  const data = await submitSubmissionCode(
+    { problemSlug, sourceCode, learningContext },
+    options,
+  );
 
   if (!data.success) {
     throw new Error("Failed to submit your solution.");

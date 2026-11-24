@@ -9,6 +9,7 @@ const authRoutes = require("./routes/auth");
 const leaderboardRoutes = require("./routes/leaderboard");
 const submissionRoutes = require("./routes/submissions");
 const activityRoutes = require("./routes/activity");
+const learningPathRoutes = require("./routes/learningPaths");
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/submissions", submissionRoutes);
 app.use("/api/activity", activityRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
+app.use("/api/learning-paths", learningPathRoutes);
 
 async function startServer() {
   await connectDB();

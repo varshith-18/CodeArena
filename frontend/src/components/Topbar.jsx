@@ -9,7 +9,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import { problems } from "../data/problems";
@@ -18,11 +18,27 @@ import "./Topbar.css";
 export default function Topbar({ onMenuClick, sidebarOpen }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const searchRef = useRef(null);
+  const routeLabels = {
+    "/": "Dashboard",
+    "/problems": "Problem set",
+    "/submissions": "Submissions",
+    "/leaderboard": "Leaderboard",
+    "/learn": "Learn",
+    "/settings": "Settings",
+  };
+  const breadcrumbLabel =
+    routeLabels[location.pathname] ||
+    (location.pathname.startsWith("/problems/")
+      ? "Problem workspace"
+      : location.pathname.startsWith("/submissions/")
+        ? "Submission details"
+        : "Workspace");
 
   function handleLogout() {
     logout();
@@ -97,9 +113,9 @@ export default function Topbar({ onMenuClick, sidebarOpen }) {
       </button>
 
       <div className="breadcrumb">
-        <span>Workspace</span>
+        <span>CodeArena</span>
         <span className="breadcrumb-divider">/</span>
-        <strong>Dashboard</strong>
+        <strong>{breadcrumbLabel}</strong>
       </div>
 
       <div className="topbar-actions">

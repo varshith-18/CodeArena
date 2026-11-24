@@ -25,13 +25,11 @@ export default function ActivityCalendar() {
         setLoading(true);
         setError("");
 
-        const token = sessionStorage.getItem("codearena_token");
-
-        if (!token) {
+        if (!sessionStorage.getItem("codearena_token")) {
           throw new Error("Please log in to view your activity.");
         }
 
-        const data = await getMyActivity(token);
+        const data = await getMyActivity();
 
         if (!cancelled) {
           setActivity(data);

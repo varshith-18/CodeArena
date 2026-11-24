@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  Link,
   Navigate,
   Route,
   Routes,
@@ -21,18 +22,26 @@ import ProblemWorkspace from "./pages/ProblemWorkspace";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Leaderboard from "./pages/Leaderboard";
+import LearningPaths from "./pages/LearningPaths";
+import LearningPathDetail from "./pages/LearningPathDetail";
 
 import "./index.css";
 import "./App.css";
+import "./ui-polish.css";
 
 function PlaceholderPage({ title }) {
   return (
     <div className="page-content">
-      <section className="welcome-section">
-        <div>
-          <span className="section-eyebrow">CODEARENA</span>
-          <h1>{title}</h1>
-          <p>This section is being prepared. Check back soon for updates.</p>
+      <section className="placeholder-page">
+        <span className="placeholder-eyebrow">CODEARENA / {title.toUpperCase()}</span>
+        <h1>{title}</h1>
+        <p>
+          This workspace is being prepared. Your account, submissions, and
+          problem progress remain available across the rest of CodeArena.
+        </p>
+        <div className="placeholder-actions">
+          <Link to="/" className="primary-button">Return to dashboard</Link>
+          <Link to="/problems" className="secondary-button">Explore problems</Link>
         </div>
       </section>
     </div>
@@ -150,7 +159,11 @@ function AppRoutes() {
               <Route path="/leaderboard" element={<Leaderboard />} />
               <Route
                 path="/learn"
-                element={<PlaceholderPage title="Learn" />}
+                element={<LearningPaths />}
+              />
+              <Route
+                path="/learn/:pathSlug"
+                element={<LearningPathDetail />}
               />
 
               <Route

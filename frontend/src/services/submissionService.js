@@ -8,10 +8,14 @@ export function runCode({ problemSlug, sourceCode }, options = {}) {
   });
 }
 
-export function submitCode({ problemSlug, sourceCode }, options = {}) {
+export function submitCode({ problemSlug, sourceCode, learningContext }, options = {}) {
   return apiRequest("/submissions/submit", {
     method: "POST",
-    body: { problemSlug, sourceCode },
+    body: {
+      problemSlug,
+      sourceCode,
+      ...(learningContext ? { learningContext } : {}),
+    },
     ...options,
   });
 }

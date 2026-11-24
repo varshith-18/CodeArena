@@ -70,6 +70,9 @@ export function AuthProvider({ children }) {
   function logout() {
     sessionStorage.removeItem("codearena_token");
     sessionStorage.removeItem("codearena_user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("accessToken");
     setUser(null);
   }
 

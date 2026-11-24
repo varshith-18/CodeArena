@@ -63,8 +63,7 @@ export default function Leaderboard() {
         setStatsLoading(true);
         setStatsError("");
 
-        // Change this if your AuthContext stores the token elsewhere.
-        const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("codearena_token");
 
         if (!token) {
           throw new Error("Please log in to view your personal stats.");

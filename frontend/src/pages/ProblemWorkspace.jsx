@@ -36,9 +36,15 @@ export default function ProblemWorkspace() {
     fontSize,
     setFontSize,
     resetCode,
+    learningContext,
   } = workspace;
 
-  const execution = useCodeExecution(slug, code, setBottomTab);
+  const execution = useCodeExecution(
+    slug,
+    code,
+    setBottomTab,
+    learningContext,
+  );
   const { result, isRunning, runCode, submitCode, clearResult } = execution;
   const submission = useSubmissionCode({
     slug,

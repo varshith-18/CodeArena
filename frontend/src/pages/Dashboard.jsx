@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import {
@@ -11,6 +11,7 @@ import {
   CheckCircle2,
   Clock3,
   Zap,
+  BookOpen,
 } from "lucide-react";
 
 import StatCard from "../components/StatCard";
@@ -18,6 +19,13 @@ import ActivityCalendar from "../components/ActivityCalendar";
 
 import { problems } from "../data/problems";
 import { getDashboardStats, getDashboardActivity } from "../api/dashboardApi";
+import {
+  getContinueLearning,
+  getLearningPathProgress,
+} from "../services/learningService";
+import {
+  learningPathsBySlug,
+} from "../data/learningPaths";
 
 import "./Dashboard.css";
 
@@ -41,6 +49,10 @@ function Dashboard() {
   const [activity, setActivity] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [continueLearning, setContinueLearning] = useState(null);
+  const [learningPath, setLearningPath] = useState(null);
+  const [learningLoading, setLearningLoading] = useState(true);
+  const [learningError, setLearningError] = useState("");
   const solvedProblemSlugs = new Set(stats?.solvedProblemSlugs || []);
 
   useEffect(() => {
@@ -94,6 +106,37 @@ function Dashboard() {
       active = false;
     };
   }, []);
+
+  const loadContinueLearning = useCallback(async () => {
+    setLearningLoading(true);
+    setLearningError("");
+
+    try {
+      const continueData = await getContinueLearning();
+      const nextStep = continueData.continueLearning || null;
+      setContinueLearning(nextStep);
+
+      if (!nextStep) {
+        setLearningPath(null);
+        return;
+      }
+
+      const pathData = await getLearningPathProgress(nextStep.pathSlug);
+      setLearningPath(pathData.path || null);
+    } catch (requestError) {
+      setContinueLearning(null);
+      setLearningPath(null);
+      setLearningError(
+        requestError.message || "Unable to load your learning progress.",
+      );
+    } finally {
+      setLearningLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadContinueLearning();
+  }, [loadContinueLearning]);
 
   // Get the last seven days from the actual activity API.
   const weeklyActivity = (activity?.dailyActivity || [])
@@ -182,6 +225,126 @@ function Dashboard() {
           {error}
         </div>
       )}
+
+      <section className="panel continue-learning-panel">
+        <div className="panel-header">
+          <div>
+            <h2>Continue learning</h2>
+            <p>Your next step in the guided problem curriculum.</p>
+          </div>
+          <Link to="/learn" className="text-link">
+            Explore all paths <ArrowUpRight size={16} />
+          </Link>
+        </div>
+
+        {learningLoading ? (
+          <p className="continue-learning-state" role="status">
+            Loading your learning progress...
+          </p>
+        ) : learningError ? (
+          <div className="continue-learning-error" role="alert">
+            <div>
+              <strong>Learning progress unavailable</strong>
+              <p>{learningError}</p>
+            </div>
+            <button type="button" onClick={loadContinueLearning}>
+              Try again
+            </button>
+          </div>
+        ) : !continueLearning || !learningPath ? (
+          <div className="continue-learning-empty">
+            <div className="continue-learning-empty-icon">
+              <BookOpen size={20} />
+            </div>
+            <div>
+              <h3>Start your first learning path</h3>
+              <p>
+                Choose a focused curriculum, then return here to continue from
+                your next unlocked problem.
+              </p>
+            </div>
+            <Link to="/learn" className="secondary-button">
+              Browse learning paths <ArrowRight size={16} />
+            </Link>
+          </div>
+        ) : (
+          (() => {
+            const catalogPath = learningPathsBySlug[continueLearning.pathSlug];
+            const catalogTopic = catalogPath?.topics.find(
+              (topic) => topic.slug === continueLearning.topicSlug,
+            );
+            const nextProblem = problems.find(
+              (problem) => problem.slug === continueLearning.problemSlug,
+            );
+            const percent = learningPath.percent || 0;
+
+            return (
+              <div className="continue-learning-content">
+                <div className="continue-learning-main">
+                  <span className="continue-learning-label">
+                    ACTIVE PATH
+                  </span>
+                  <h3>{learningPath.title}</h3>
+                  <p>
+                    Current topic:{" "}
+                    <strong>
+                      {catalogTopic?.title || continueLearning.topicSlug}
+                    </strong>
+                  </p>
+
+                  <div className="continue-learning-progress">
+                    <div>
+                      <span>Overall path completion</span>
+                      <strong>{percent}%</strong>
+                    </div>
+                    <div
+                      role="progressbar"
+                      aria-label={`${learningPath.title} completion`}
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      aria-valuenow={percent}
+                    >
+                      <span style={{ width: `${percent}%` }} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="continue-learning-next">
+                  <span className="continue-learning-label">
+                    NEXT RECOMMENDED
+                  </span>
+                  {nextProblem ? (
+                    <div className="continue-learning-problem">
+                      <div>
+                        <strong>{nextProblem.title}</strong>
+                        <span>
+                          {nextProblem.difficulty} ·{" "}
+                          {nextProblem.topics.slice(0, 2).join(" · ")}
+                        </span>
+                      </div>
+                      {nextProblem.difficulty && (
+                        <span
+                          className={`difficulty difficulty-${nextProblem.difficulty.toLowerCase()}`}
+                        >
+                          {nextProblem.difficulty}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <p>Problem details are loading from the problem catalog.</p>
+                  )}
+                  <Link
+                    className="primary-button"
+                    to={`/problems/${continueLearning.problemSlug}?path=${encodeURIComponent(continueLearning.pathSlug)}&topic=${encodeURIComponent(continueLearning.topicSlug)}`}
+                  >
+                    Continue learning <ArrowRight size={16} />
+                  </Link>
+                </div>
+              </div>
+            );
+          })()
+        )}
+      </section>
 
       {/* Main Dashboard Content */}
       <section className="dashboard-grid">

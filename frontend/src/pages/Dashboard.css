@@ -157,6 +157,200 @@
   line-height: 1.5;
 }
 
+.continue-learning-panel {
+  margin-bottom: 20px;
+  border-left: 3px solid #1e98c0;
+}
+
+.continue-learning-state,
+.continue-learning-empty,
+.continue-learning-error,
+.continue-learning-content {
+  min-height: 112px;
+}
+
+.continue-learning-state {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  color: #8e9baa;
+  font-size: 12px;
+}
+
+.continue-learning-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px;
+  background: #171014;
+  border: 1px solid #49303a;
+  border-radius: var(--radius-md);
+}
+
+.continue-learning-error strong {
+  color: #efdee5;
+  font-size: 12px;
+}
+
+.continue-learning-error p {
+  margin: 4px 0 0;
+  color: #bba4ad;
+  font-size: 11px;
+}
+
+.continue-learning-error button {
+  min-height: 34px;
+  padding: 0 12px;
+  color: #e9c4d2;
+  background: transparent;
+  border: 1px solid #67404f;
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+}
+
+.continue-learning-empty {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.continue-learning-empty-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  color: #72cee9;
+  background: #10202a;
+  border: 1px solid #294758;
+  border-radius: var(--radius-md);
+}
+
+.continue-learning-empty h3 {
+  margin: 0 0 5px;
+  font-size: 14px;
+}
+
+.continue-learning-empty p {
+  margin: 0;
+  max-width: 520px;
+  color: #929daf;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.continue-learning-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  gap: 28px;
+}
+
+.continue-learning-main {
+  min-width: 0;
+  padding-right: 28px;
+  border-right: 1px solid #202731;
+}
+
+.continue-learning-label {
+  color: #7f9aac;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.continue-learning-main h3 {
+  margin: 7px 0 5px;
+  color: #edf2f7;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+}
+
+.continue-learning-main > p {
+  margin: 0;
+  color: #929daf;
+  font-size: 12px;
+}
+
+.continue-learning-main > p strong {
+  color: #cbd6e2;
+}
+
+.continue-learning-progress {
+  margin-top: 16px;
+}
+
+.continue-learning-progress > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+  color: #8290a1;
+  font-size: 10px;
+}
+
+.continue-learning-progress strong {
+  color: #72cee9;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.continue-learning-progress > div:last-child {
+  height: 5px;
+  overflow: hidden;
+  background: #242c37;
+  border-radius: 2px;
+}
+
+.continue-learning-progress > div:last-child > span {
+  display: block;
+  height: 100%;
+  background: #22a5cf;
+  border-radius: 2px;
+  transition: width 240ms ease;
+}
+
+.continue-learning-next {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.continue-learning-problem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 8px 0 14px;
+}
+
+.continue-learning-problem > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 5px;
+}
+
+.continue-learning-problem strong {
+  overflow: hidden;
+  color: #dfe6ef;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.continue-learning-problem > div span {
+  color: #8290a1;
+  font-size: 10px;
+}
+
+.continue-learning-next .primary-button {
+  width: 100%;
+  margin-top: auto;
+  min-height: 40px;
+  padding: 9px 12px;
+}
+
 .muted-icon {
   flex-shrink: 0;
   color: #00a6d6;
@@ -539,6 +733,17 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .continue-learning-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .continue-learning-main {
+    padding-right: 0;
+    padding-bottom: 18px;
+    border-right: 0;
+    border-bottom: 1px solid #202731;
+  }
+
   .right-column {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -552,6 +757,28 @@
 @media (max-width: 600px) {
   .page-content {
     padding: 20px 15px;
+  }
+
+  .continue-learning-empty {
+    grid-template-columns: 38px minmax(0, 1fr);
+  }
+
+  .continue-learning-empty .secondary-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .continue-learning-error,
+  .continue-learning-empty {
+    align-items: flex-start;
+  }
+
+  .continue-learning-error {
+    flex-direction: column;
+  }
+
+  .continue-learning-error button {
+    width: 100%;
   }
 
   .welcome-section {

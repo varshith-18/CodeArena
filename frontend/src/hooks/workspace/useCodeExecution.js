@@ -4,7 +4,7 @@ import {
   submitCode as submitSubmissionCode,
 } from "../../api/submissionApi";
 
-export default function useCodeExecution(slug, code, setBottomTab) {
+export default function useCodeExecution(slug, code, setBottomTab, learningContext = null) {
   const [result, setResult] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
 
@@ -49,7 +49,11 @@ export default function useCodeExecution(slug, code, setBottomTab) {
     setResult(null);
 
     try {
-      const data = await submitSubmissionCode({ problemSlug: slug, sourceCode: code });
+      const data = await submitSubmissionCode({
+        problemSlug: slug,
+        sourceCode: code,
+        learningContext,
+      });
       setResult({
         status: data.verdict || "Unknown",
         message: `${data.passed ?? 0}/${data.total ?? data.results?.length ?? 0} test cases passed.`,

@@ -10,6 +10,7 @@ import {
   X,
   Terminal,
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const navigation = [
   { label: "Dashboard", path: "/", icon: LayoutDashboard },
@@ -19,6 +20,9 @@ const navigation = [
 ];
 
 export default function Sidebar({ open, onClose }) {
+  const { user } = useAuth();
+  const initial = user?.name?.charAt(0)?.toUpperCase() || "C";
+
   return (
     <>
       {open && (
@@ -84,10 +88,10 @@ export default function Sidebar({ open, onClose }) {
           </NavLink>
 
           <div className="sidebar-footer">
-            <div className="avatar">V</div>
+            <div className="avatar">{initial}</div>
             <div className="user-info">
-              <strong>Code Explorer</strong>
-              <span>Free account</span>
+              <strong>{user?.name || "Code Explorer"}</strong>
+              <span>{user?.role === "admin" ? "Administrator" : "Free account"}</span>
             </div>
           </div>
         </div>

@@ -173,6 +173,10 @@ export default function useProblemWorkspace() {
   const [bottomTab, setBottomTab] = useState("testcases");
   const [selectedTest, setSelectedTest] = useState(0);
   const [fontSize, setFontSize] = useState(14);
+  const pathSlug = searchParams.get("path");
+  const topicSlug = searchParams.get("topic");
+  const learningContext =
+    pathSlug && topicSlug ? { pathSlug, topicSlug } : null;
 
   useEffect(() => {
     setCode(details?.starterCode || "// Write your JavaScript solution here\n");
@@ -201,5 +205,6 @@ export default function useProblemWorkspace() {
     fontSize,
     setFontSize,
     resetCode,
+    learningContext,
   };
 }

@@ -5,6 +5,16 @@ const { protect } = require("../middleware/auth");
 const problemTestCases = require("../config/problemTestCases");
 const router = express.Router();
 const Submission = require("../models/Submission");
+const LearningProgress = require("../models/LearningProgress");
+const {
+  knownProblemSlugSet,
+  learningPathsBySlug,
+} = require("../config/learningPaths");
+const {
+  getAcceptedProblemSlugs,
+  topicIsUnlocked,
+  pathIsComplete,
+} = require("../utils/learningProgress");
 
 const JUDGE0_URL = process.env.JUDGE0_URL || "http://localhost:2358";
 const JAVASCRIPT_LANGUAGE_ID = 63;
@@ -256,6 +266,71 @@ router.post("/submit", protect, async (req, res) => {
       });
     }
 
+    const { learningContext } = req.body;
+    if (learningContext !== undefined) {
+      if (
+        !learningContext ||
+        typeof learningContext.pathSlug !== "string" ||
+        typeof learningContext.topicSlug !== "string"
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "learningContext must include pathSlug and topicSlug",
+        });
+      }
+
+      if (!knownProblemSlugSet.has(problemSlug)) {
+        return res.status(400).json({
+          success: false,
+          message: "Unknown problem slug.",
+        });
+      }
+
+      const path = learningPathsBySlug[learningContext.pathSlug];
+      if (!path) {
+        return res.status(404).json({
+          success: false,
+          message: "Unknown learning path.",
+        });
+      }
+
+      const topic = path.topics.find(
+        (item) => item.slug === learningContext.topicSlug,
+      );
+      if (!topic) {
+        return res.status(404).json({
+          success: false,
+          message: "Unknown learning path topic.",
+        });
+      }
+
+      if (!topic.problems.includes(problemSlug)) {
+        return res.status(400).json({
+          success: false,
+          message: "Problem slug is not part of the selected learning topic.",
+        });
+      }
+
+      const acceptedSlugs = await getAcceptedProblemSlugs(req.user.id);
+      const pathPrerequisitesComplete = path.prerequisites.every((slug) => {
+        const prerequisitePath = learningPathsBySlug[slug];
+        return (
+          prerequisitePath &&
+          pathIsComplete(prerequisitePath, acceptedSlugs)
+        );
+      });
+
+      if (
+        !pathPrerequisitesComplete ||
+        !topicIsUnlocked(path, topic, acceptedSlugs)
+      ) {
+        return res.status(403).json({
+          success: false,
+          message: "Complete this topic's prerequisites before continuing.",
+        });
+      }
+    }
+
     const problem = problemTestCases[problemSlug] || {
       functionName: "solve",
       testCases: [
@@ -388,6 +463,21 @@ try {
       time,
       memory: totalMemory,
     });
+
+    if (verdict === "Accepted" && req.body.learningContext) {
+      const { learningContext } = req.body;
+      await LearningProgress.findOneAndUpdate(
+        { user: req.user.id },
+        {
+          $set: {
+            activePathSlug: learningContext.pathSlug,
+            activeTopicSlug: learningContext.topicSlug,
+            activeProblemSlug: problemSlug,
+          },
+        },
+        { upsert: true, new: true, setDefaultsOnInsert: true },
+      );
+    }
 
     return res.status(200).json({
       success: true,
